@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "components/**/*.js",
+    "pages/**/*.jsx",
+    "Layout.jsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
