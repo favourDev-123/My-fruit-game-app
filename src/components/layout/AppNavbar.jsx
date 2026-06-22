@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-import { Apple, BookOpen, Gamepad2, Users, Home } from "lucide-react";
+import { Apple, BookOpen, Gamepad2, Users, Home, Music, Music2 } from "lucide-react";
+import { useMusic } from "@/lib/MusicContext";
 
 const navItems = [
   { path: "/", label: "Home", icon: Home },
@@ -11,6 +12,7 @@ const navItems = [
 
 export default function AppNavbar() {
   const location = useLocation();
+  const { musicOn, toggleMusic } = useMusic();
 
   return (
     <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border">
@@ -42,25 +44,40 @@ export default function AppNavbar() {
             })}
           </div>
 
-          {/* Mobile nav */}
-          <div className="flex md:hidden items-center gap-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const active = location.pathname === item.path;
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`p-2 rounded-xl transition-all duration-200
-                    ${active 
-                      ? "bg-primary text-primary-foreground" 
-                      : "text-muted-foreground hover:text-foreground"
-                    }`}
-                >
-                  <Icon className="w-5 h-5" />
-                </Link>
-              );
-            })}
+          <div className="flex items-center gap-1">
+            {/* Music toggle */}
+            <button
+              onClick={toggleMusic}
+              className={`p-2 rounded-xl transition-all duration-200 ${
+                musicOn
+                  ? "text-primary hover:text-primary/80"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              title={musicOn ? "Mute music" : "Play music"}
+            >
+              {musicOn ? <Music2 className="w-5 h-5" /> : <Music className="w-5 h-5" />}
+            </button>
+
+            {/* Mobile nav */}
+            <div className="flex md:hidden items-center gap-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const active = location.pathname === item.path;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={`p-2 rounded-xl transition-all duration-200
+                      ${active 
+                        ? "bg-primary text-primary-foreground" 
+                        : "text-muted-foreground hover:text-foreground"
+                      }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

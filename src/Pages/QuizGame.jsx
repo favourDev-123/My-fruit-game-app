@@ -7,9 +7,6 @@ import { quizQuestions } from "@/lib/fruitData";
 import QuizOption from "@/components/quiz/QuizOption";
 import ScoreScreen from "@/components/quiz/ScoreScreen";
 import {
-  startBackgroundMusic,
-  stopBackgroundMusic,
-  setMuted,
   playCorrect,
   playWrong,
   playFinish,
@@ -32,31 +29,27 @@ export default function QuizGame() {
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
-  const [muted, setMuted] = useState(false);
+  const [sfxMuted, setSfxMuted] = useState(false);
   const mutedRef = useRef(false);
 
   const questions = useMemo(() => shuffleArray(quizQuestions).slice(0, 8), [started]);
 
   useEffect(() => {
-    if (started && !finished) {
+    if (started) {
       resumeContext();
-      startBackgroundMusic();
     }
-    return () => stopBackgroundMusic();
   }, [started]);
 
   useEffect(() => {
     if (finished) {
-      stopBackgroundMusic();
       if (!mutedRef.current) playFinish();
     }
   }, [finished]);
 
-  const toggleMute = () => {
-    const next = !muted;
-    setMuted(next);
+  const toggleSfx = () => {
+    const next = !sfxMuted;
+    setSfxMuted(next);
     mutedRef.current = next;
-    setMuted(next);
   };
 
   const handleSelect = (index) => {
@@ -86,7 +79,6 @@ export default function QuizGame() {
   };
 
   const restart = () => {
-    stopBackgroundMusic();
     setStarted(false);
     setCurrentQ(0);
     setSelected(null);
@@ -140,11 +132,11 @@ export default function QuizGame() {
           <div className="flex items-center gap-3">
             <span className="text-sm font-bold text-primary">{score} points</span>
             <button
-              onClick={toggleMute}
+              onClick={toggleSfx}
               className="p-1.5 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-              title={muted ? "Unmute" : "Mute"}
+              title={sfxMuted ? "Unmute SFX" : "Mute SFX"}
             >
-              {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+              {sfxMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
             </button>
           </div>
         </div>
