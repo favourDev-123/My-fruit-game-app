@@ -7,12 +7,12 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { MusicProvider } from '@/lib/MusicContext';
 import UserNotRegisteredError from '@/components/ui/UserNotRegisteredError';
 import AppLayout from './components/layout/Applayout';
-import Home from './pages/Home';
-import FruitLibrary from './pages/FruitLibrary';
-import FruitDetail from './pages/FruitDetail';
-import QuizGame from './pages/QuizGame';
-import AgeGuide from './pages/AgeGuide';
-import Learn from './pages/Learn';
+import Home from './Pages/Home';
+import FruitLibrary from './Pages/FruitLibrary';
+import FruitDetail from './Pages/FruitDetail';
+import QuizGame from './Pages/QuizGame';
+import AgeGuide from './Pages/AgeGuide';
+import Learn from './Pages/Learn';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
