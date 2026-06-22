@@ -6,7 +6,7 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { MusicProvider } from '@/lib/MusicContext';
 import UserNotRegisteredError from '@/components/ui/UserNotRegisteredError';
-import AppLayout from './components/layout/AppLayout';
+import AppLayout from './components/layout/Applayout';
 import Home from './pages/Home';
 import FruitLibrary from './pages/FruitLibrary';
 import FruitDetail from './pages/FruitDetail';
