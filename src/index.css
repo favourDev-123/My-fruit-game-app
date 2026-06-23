@@ -151,6 +151,9 @@
   .animate-score-pop {
     animation: scorePop 0.4s ease-out forwards;
   }
+  .animate-shimmer {
+    animation: shimmer 2s ease-in-out infinite;
+  }
 }
 
 @keyframes float {
@@ -190,4 +193,8 @@
   0% { transform: scale(1); }
   50% { transform: scale(1.4); }
   100% { transform: scale(1); }
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
 }

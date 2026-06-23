@@ -29,6 +29,15 @@ export function MusicProvider({ children }) {
     }
   }, [musicOn]);
 
+  const startMusic = useCallback(() => {
+    if (!startedRef.current) {
+      resumeContext();
+      startBackgroundMusic();
+      startedRef.current = true;
+      setMusicOn(true);
+    }
+  }, []);
+
   useEffect(() => {
     return () => {
       stopBackgroundMusic();
@@ -37,7 +46,7 @@ export function MusicProvider({ children }) {
   }, []);
 
   return (
-    <MusicContext.Provider value={{ musicOn, toggleMusic }}>
+    <MusicContext.Provider value={{ musicOn, toggleMusic, startMusic }}>
       {children}
     </MusicContext.Provider>
   );

@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Play, Home, Star } from 'lucide-react';
+import { Play, Home, Star, Zap } from 'lucide-react';
 import { getHighScore } from '@/lib/gameStorage';
+import { useMusic } from '@/lib/MusicContext';
 
 export default function GameOver() {
   const navigate = useNavigate();
   const location = useLocation();
   const score = location.state?.score || 0;
+  const bestStreak = location.state?.bestStreak || 0;
   const highScore = getHighScore();
   const [stars, setStars] = useState(0);
   const [showContent, setShowContent] = useState(false);
+  const { startMusic } = useMusic();
 
   useEffect(() => {
     const s = score >= 15 ? 3 : score >= 8 ? 2 : score >= 3 ? 1 : 0;
@@ -31,12 +34,15 @@ export default function GameOver() {
 
   return (
     <div className="fixed inset-0 game-gradient overflow-hidden flex flex-col items-center justify-center p-6">
+      {/* Background glow */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full bg-green-500/8 blur-3xl" />
+
       {/* Stars */}
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 0.2 }}
-        className="flex gap-2 mb-4"
+        className="flex gap-2 mb-4 z-10"
       >
         {[1, 2, 3].map((s) => (
           <motion.div
@@ -62,19 +68,27 @@ export default function GameOver() {
       >
         {/* Game Over text */}
         <motion.div variants={item} className="text-center">
-          <div className="text-[10px] text-cyan-400/60 font-bold tracking-[0.2em] uppercase mb-1">
+          <div className="text-[10px] text-green-400/60 font-bold tracking-[0.2em] uppercase mb-1">
             Game Over
           </div>
           <motion.div
             initial={{ scale: 1 }}
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ duration: 0.5, delay: 0.8 }}
-            className="text-5xl sm:text-6xl font-heading text-white"
+            className="text-5xl sm:text-6xl font-heading text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]"
           >
             {score}
           </motion.div>
-          <div className="text-sm text-cyan-300/60 mt-1 font-semibold">points</div>
+          <div className="text-sm text-green-300/60 mt-1 font-semibold">points</div>
         </motion.div>
+
+        {/* Best streak */}
+        {bestStreak >= 3 && (
+          <motion.div variants={item} className="flex items-center gap-2 text-yellow-300/80 text-sm font-bold">
+            <Zap className="w-4 h-4 fill-yellow-300" />
+            Best Combo: {bestStreak}x
+          </motion.div>
+        )}
 
         {/* High score */}
         <motion.div variants={item} className="glass rounded-2xl px-5 py-3 w-full max-w-[220px] text-center">
@@ -97,10 +111,14 @@ export default function GameOver() {
           variants={item}
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
-          onClick={() => navigate('/game')}
-          className="w-full max-w-[280px] py-4 rounded-2xl font-heading text-xl text-white neon-glow
-            bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500
-            transition-all duration-200 flex items-center justify-center gap-3"
+          onClick={() => {
+            startMusic();
+            navigate('/game');
+          }}
+          className="w-full max-w-[280px] py-4 rounded-2xl font-heading text-xl text-white
+            bg-gradient-to-r from-green-500 to-emerald-600
+            shadow-[0_0_30px_rgba(34,197,94,0.4)] hover:shadow-[0_0_50px_rgba(34,197,94,0.6)]
+            transition-all duration-200 flex items-center justify-center gap-3 border border-white/20"
         >
           <Play className="w-6 h-6 fill-white" />
           Play Again

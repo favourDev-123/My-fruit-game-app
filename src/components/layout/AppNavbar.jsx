@@ -15,12 +15,12 @@ export default function AppNavbar() {
   const { musicOn, toggleMusic } = useMusic();
 
   return (
-    <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border">
+    <nav className="sticky top-0 z-50 bg-[#0a1628]/90 backdrop-blur-xl border-b border-green-900/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2">
             <span className="text-2xl">🍎</span>
-            <span className="font-heading text-xl text-primary hidden sm:block">FruitWise</span>
+            <span className="font-heading text-xl text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] hidden sm:block">FruitQuest</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-1">
@@ -33,8 +33,8 @@ export default function AppNavbar() {
                   to={item.path}
                   className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200
                     ${active 
-                      ? "bg-primary text-primary-foreground shadow-md" 
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      ? "bg-green-500/20 text-green-300 shadow-[0_0_15px_rgba(34,197,94,0.15)]" 
+                      : "text-white/40 hover:text-white/70 hover:bg-white/5"
                     }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -50,8 +50,8 @@ export default function AppNavbar() {
               onClick={toggleMusic}
               className={`p-2 rounded-xl transition-all duration-200 ${
                 musicOn
-                  ? "text-primary hover:text-primary/80"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "text-green-400 hover:text-green-300"
+                  : "text-white/40 hover:text-white/70"
               }`}
               title={musicOn ? "Mute music" : "Play music"}
             >
@@ -69,8 +69,8 @@ export default function AppNavbar() {
                     to={item.path}
                     className={`p-2 rounded-xl transition-all duration-200
                       ${active 
-                        ? "bg-primary text-primary-foreground" 
-                        : "text-muted-foreground hover:text-foreground"
+                        ? "bg-green-500/20 text-green-300" 
+                        : "text-white/40 hover:text-white/70"
                       }`}
                   >
                     <Icon className="w-5 h-5" />

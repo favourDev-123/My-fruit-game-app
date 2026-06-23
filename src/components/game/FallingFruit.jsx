@@ -17,15 +17,24 @@ export default function FallingFruit({ fruit, onSelect, disabled, index, isCorre
 
   return (
     <motion.button
-      initial={{ opacity: 0, y: 80, scale: 0.5 }}
+      initial={{ opacity: 0, y: 120, scale: 0.3, rotate: index % 2 === 0 ? -20 : 20 }}
       animate={{
         opacity: 1,
-        y: 0,
-        scale: 1,
-        ...(showResult && isCorrect ? { scale: [1, 1.3, 1], rotate: [0, 10, -10, 0] } : {}),
-        ...(showResult && !isCorrect && !disabled ? { x: [0, -5, 5, -3, 3, 0] } : {}),
+        y: [120, -10, 0],
+        scale: [0.3, 1.1, 1],
+        rotate: [index % 2 === 0 ? -20 : 20, 0, 0],
+        ...(showResult && isCorrect ? { scale: [1, 1.4, 1.2], rotate: [0, 15, -15, 0] } : {}),
+        ...(showResult && !isCorrect && !disabled ? { x: [0, -8, 8, -5, 5, 0], opacity: [1, 1, 0.6] } : {}),
       }}
-      transition={{ type: 'spring', stiffness: 300, damping: 15, delay: index * 0.08 }}
+      transition={{
+        type: 'spring',
+        stiffness: 250,
+        damping: 14,
+        delay: index * 0.1,
+        y: { type: 'spring', stiffness: 250, damping: 14, delay: index * 0.1 },
+      }}
+      whileHover={!disabled ? { scale: 1.08, y: -5 } : {}}
+      whileTap={!disabled ? { scale: 0.92 } : {}}
       onClick={() => !disabled && onSelect(fruit)}
       disabled={disabled}
       className={`relative flex flex-col items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-2xl cursor-pointer
