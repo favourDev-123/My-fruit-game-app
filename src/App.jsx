@@ -7,12 +7,15 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { MusicProvider } from '@/lib/MusicContext';
 import UserNotRegisteredError from '@/components/ui/UserNotRegisteredError';
 import AppLayout from './components/layout/Applayout';
+import Splash from './Pages/Splash';
 import Home from './Pages/Home';
 import FruitLibrary from './Pages/FruitLibrary';
 import FruitDetail from './Pages/FruitDetail';
 import QuizGame from './Pages/QuizGame';
 import AgeGuide from './Pages/AgeGuide';
 import Learn from './Pages/Learn';
+import Game from './Pages/Game';
+import GameOver from './Pages/GameOver';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -40,8 +43,11 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
+      <Route path="/" element={<Splash />} />
+      <Route path="/game" element={<Game />} />
+      <Route path="/gameover" element={<GameOver />} />
       <Route element={<AppLayout />}>
-        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/fruits" element={<FruitLibrary />} />
         <Route path="/fruits/:id" element={<FruitDetail />} />
         <Route path="/quiz" element={<QuizGame />} />

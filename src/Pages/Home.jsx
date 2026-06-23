@@ -1,122 +1,121 @@
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { Apple, Gamepad2, Users, BookOpen, ArrowRight, Sparkles } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Play, BookOpen, Volume2, VolumeX, Trophy } from 'lucide-react';
+import { getHighScore, getSfxMuted, setSfxMuted } from '@/lib/gameStorage';
 
-const features = [
-  {
-    icon: Apple,
-    title: "Fruit Library",
-    description: "Explore 10+ fruits with detailed health benefits and nutrient profiles.",
-    link: "/fruits",
-    color: "bg-green-100 text-green-600",
-  },
-  {
-    icon: Gamepad2,
-    title: "Health Quiz",
-    description: "Test your knowledge with fun, interactive quizzes about fruit health facts.",
-    link: "/quiz",
-    color: "bg-orange-100 text-orange-600",
-  },
-  {
-    icon: Users,
-    title: "Age Guide",
-    description: "Find the best fruits for every age group — babies to seniors.",
-    link: "/age-guide",
-    color: "bg-blue-100 text-blue-600",
-  },
-  {
-    icon: BookOpen,
-    title: "Health Conditions",
-    description: "Discover which fruits help with specific health conditions.",
-    link: "/learn",
-    color: "bg-rose-100 text-rose-600",
-  },
-];
+const bgEmojis = ['🍎', '🍊', '🍋', '🍇', '🫐', '🥝', '🍓', '🍌', '🍉', '🥭'];
 
 export default function Home() {
+  const navigate = useNavigate();
+  const [highScore, setHighScore] = useState(0);
+  const [sfxOn, setSfxOn] = useState(!getSfxMuted());
+
+  useEffect(() => {
+    setHighScore(getHighScore());
+  }, []);
+
+  const toggleSfx = () => {
+    const next = !sfxOn;
+    setSfxOn(next);
+    setSfxMuted(!next);
+  };
+
+  const container = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.12, delayChildren: 0.2 } },
+  };
+  const item = {
+    hidden: { opacity: 0, y: 30 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 200, damping: 15 } },
+  };
+
   return (
-    <div className="relative overflow-hidden">
-      <section className="relative px-4 pt-16 pb-20 sm:pt-24 sm:pb-28">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-secondary/10 rounded-full blur-3xl" />
-        </div>
+    <div className="fixed inset-0 game-gradient overflow-hidden flex flex-col items-center justify-center p-6">
+      {/* Floating background emojis */}
+      {bgEmojis.map((emoji, i) => (
+        <motion.span
+          key={i}
+          className="absolute text-2xl sm:text-3xl opacity-[0.07] pointer-events-none"
+          style={{ left: `${8 + (i * 10) % 84}%`, top: `${10 + (i * 13) % 80}%` }}
+          animate={{ y: [0, -15, 0], rotate: [0, 8, -8, 0] }}
+          transition={{ duration: 5 + i * 0.3, repeat: Infinity, ease: 'easeInOut', delay: i * 0.4 }}
+        >
+          {emoji}
+        </motion.span>
+      ))}
 
-        <div className="max-w-4xl mx-auto text-center relative">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="flex flex-col items-center gap-5 w-full max-w-sm z-10"
+      >
+        {/* Logo */}
+        <motion.div variants={item} className="flex flex-col items-center mb-2">
+          <motion.span
+            className="text-7xl sm:text-8xl mb-3"
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
-              <Sparkles className="w-4 h-4" />
-              Welcome to FruitQuest Academy
-            </div>
+            🍎
+          </motion.span>
+          <h1 className="text-3xl sm:text-4xl font-heading text-cyan-neon text-center">
+            FruitQuest Academy
+          </h1>
+          <p className="text-sm text-cyan-300/60 mt-1 font-semibold tracking-wider">
+            LEARN · PLAY · GROW
+          </p>
+        </motion.div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading text-foreground leading-tight mb-6">
-              Discover the Superpowered
-              <span className="text-primary"> Health Benefits</span> of Fruits
-            </h1>
-
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-              Unlock the superpowered health benefits of nature's best fruits through fun,
-              interactive games and easy-to-digest knowledge tailored for all ages.
-            </p>
-
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <Link to="/fruits">
-                <Button size="lg" className="gap-2 text-base">
-                  Explore Fruits <ArrowRight className="w-5 h-5" />
-                </Button>
-              </Link>
-              <Link to="/quiz">
-                <Button size="lg" variant="outline" className="gap-2 text-base">
-                  Take a Quiz <Gamepad2 className="w-5 h-5" />
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      <section className="px-4 pb-20 sm:pb-28">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-heading text-foreground mb-4">
-              Explore & Learn
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-              Everything you need to know about fruits and their health benefits.
-            </p>
+        {/* High Score */}
+        <motion.div variants={item} className="glass rounded-2xl px-5 py-3 w-full max-w-[260px] flex items-center gap-3">
+          <Trophy className="w-5 h-5 text-yellow-400 flex-shrink-0" />
+          <div>
+            <div className="text-[10px] text-yellow-300/60 font-bold tracking-widest uppercase">High Score</div>
+            <div className="text-xl font-extrabold text-white">{highScore}</div>
           </div>
+        </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-              >
-                <Link to={feature.link} className="block group">
-                  <div className="h-full p-6 rounded-2xl border bg-card hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                    <div className={`w-12 h-12 rounded-xl ${feature.color} flex items-center justify-center mb-4`}>
-                      <feature.icon className="w-6 h-6" />
-                    </div>
-                    <h3 className="text-lg font-heading text-foreground mb-2 group-hover:text-primary transition-colors">
-                      {feature.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {feature.description}
-                    </p>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+        {/* Start Game */}
+        <motion.button
+          variants={item}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          onClick={() => navigate('/game')}
+          className="w-full max-w-[280px] py-4 rounded-2xl font-heading text-xl text-white neon-glow
+            bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500
+            transition-all duration-200 flex items-center justify-center gap-3"
+        >
+          <Play className="w-6 h-6 fill-white" />
+          Start Game
+        </motion.button>
+
+        {/* Quiz & Learn */}
+        <motion.button
+          variants={item}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          onClick={() => navigate('/quiz')}
+          className="w-full max-w-[280px] py-3.5 rounded-2xl font-heading text-lg text-white
+            bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500
+            transition-all duration-200 flex items-center justify-center gap-3 neon-glow-orange"
+        >
+          <BookOpen className="w-5 h-5" />
+          Quiz & Learn
+        </motion.button>
+
+        {/* Sound toggle */}
+        <motion.button
+          variants={item}
+          whileTap={{ scale: 0.9 }}
+          onClick={toggleSfx}
+          className="glass rounded-full p-3 text-white/60 hover:text-white hover:bg-white/10 transition-all"
+          title={sfxOn ? 'Mute' : 'Unmute'}
+        >
+          {sfxOn ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+        </motion.button>
+      </motion.div>
     </div>
   );
 }
