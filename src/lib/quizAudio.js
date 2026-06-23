@@ -90,6 +90,41 @@ export function playFinish() {
   playSfx(SOUNDS.finish, synthFinish);
 }
 
+export function playSplash() {
+  if (isMuted) return;
+  const ctx = getCtx();
+  const notes = [261.63, 329.63, 392, 523.25, 659.25, 783.99];
+  notes.forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = i % 2 === 0 ? 'sine' : 'triangle';
+    osc.frequency.value = freq;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    const t = ctx.currentTime + i * 0.08;
+    gain.gain.setValueAtTime(0.3, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+    osc.start(t);
+    osc.stop(t + 0.4);
+  });
+  const noiseCtx = new AudioContext();
+  const bufSize = ctx.sampleRate * 0.15;
+  const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < bufSize; i++) {
+    data[i] = (Math.random() * 2 - 1) * (1 - i / bufSize);
+  }
+  const noise = ctx.createBufferSource();
+  noise.buffer = buf;
+  const noiseGain = ctx.createGain();
+  noiseGain.gain.setValueAtTime(0.15, ctx.currentTime);
+  noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+  noise.connect(noiseGain);
+  noiseGain.connect(ctx.destination);
+  noise.start();
+  noise.stop(ctx.currentTime + 0.15);
+}
+
 export function resumeContext() {
   if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
 }
