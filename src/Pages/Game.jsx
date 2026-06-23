@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import HUD from '@/components/game/HUD';
 import FallingFruit from '@/components/game/FallingFruit';
@@ -8,12 +7,13 @@ import { getRandomNutrient, getRoundFruits } from '@/lib/gameData';
 import { setHighScore } from '@/lib/gameStorage';
 import { playCorrect, playWrong } from '@/lib/quizAudio';
 import { getSfxMuted } from '@/lib/gameStorage';
+import { useGameState } from '@/lib/GameStateContext';
 
 const TOTAL_LIVES = 5;
 const GAME_DURATION = 60;
 
 export default function Game() {
-  const navigate = useNavigate();
+  const { goTo } = useGameState();
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(GAME_DURATION);
   const [lives, setLives] = useState(TOTAL_LIVES);
@@ -48,19 +48,13 @@ export default function Game() {
     setShowResult(false);
   }, []);
 
-  useEffect(() => {
-    startRound();
-  }, []);
+  useEffect(() => { startRound(); }, []);
 
   useEffect(() => {
     if (gameOver) return;
     timerRef.current = setInterval(() => {
       setTimer((t) => {
-        if (t <= 1) {
-          clearInterval(timerRef.current);
-          setGameOver(true);
-          return 0;
-        }
+        if (t <= 1) { clearInterval(timerRef.current); setGameOver(true); return 0; }
         return t - 1;
       });
     }, 1000);
@@ -70,10 +64,10 @@ export default function Game() {
   useEffect(() => {
     if (gameOver) {
       setHighScore(score);
-      const t = setTimeout(() => navigate('/gameover', { state: { score, bestStreak } }), 800);
+      const t = setTimeout(() => goTo('score', { score, bestStreak }), 800);
       return () => clearTimeout(t);
     }
-  }, [gameOver, score, bestStreak, navigate]);
+  }, [gameOver, score, bestStreak, goTo]);
 
   const handleSelect = (fruit) => {
     if (showResult || gameOver) return;
@@ -84,17 +78,13 @@ export default function Game() {
       const newStreak = streak + 1;
       setStreak(newStreak);
       if (newStreak > bestStreak) setBestStreak(newStreak);
-
       if (newStreak >= 3) {
         setComboActive(true);
         showPopup(`${newStreak}x COMBO!`, 'text-yellow-300');
         clearTimeout(streakTimeoutRef.current);
         streakTimeoutRef.current = setTimeout(() => setComboActive(false), 2000);
-      } else {
-        showPopup('+1', 'text-green-400');
-      }
-
-      setScore((s) => s + newStreak >= 3 ? s + 2 : s + 1);
+      } else showPopup('+1', 'text-green-400');
+      setScore((s) => s + (newStreak >= 3 ? 2 : 1));
       setParticles(true);
       if (!mutedRef.current) playCorrect();
       setTimeout(() => setParticles(false), 200);
@@ -103,13 +93,7 @@ export default function Game() {
       setStreak(0);
       setComboActive(false);
       showPopup('MISS!', 'text-red-400');
-      setLives((l) => {
-        const next = l - 1;
-        if (next <= 0) {
-          setGameOver(true);
-        }
-        return next;
-      });
+      setLives((l) => { const next = l - 1; if (next <= 0) setGameOver(true); return next; });
       setShake(true);
       if (!mutedRef.current) playWrong();
       setTimeout(() => setShake(false), 400);
@@ -119,15 +103,11 @@ export default function Game() {
 
   return (
     <div className={`fixed inset-0 game-gradient overflow-hidden ${shake ? 'animate-shake' : ''}`}>
-      {/* Background glow rings for game feel */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full bg-green-500/5 blur-3xl animate-pulse" />
       <div className="absolute bottom-1/3 right-1/4 w-[200px] h-[200px] rounded-full bg-cyan-500/5 blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-
       <ParticleEffect active={particles} />
-
       <HUD score={score} timer={timer} lives={Math.max(0, lives)} totalLives={TOTAL_LIVES} streak={streak} comboActive={comboActive} />
 
-      {/* Floating score popup */}
       <AnimatePresence>
         {popupText && (
           <motion.div
@@ -143,52 +123,33 @@ export default function Game() {
         )}
       </AnimatePresence>
 
-      {/* Nutrient prompt - game style */}
       <div className="absolute top-20 left-1/2 -translate-x-1/2 w-full px-4 text-center z-10">
-        <motion.div
-          key={nutrient}
-          initial={{ opacity: 0, y: -20, scale: 0.8 }}
+        <motion.div key={nutrient} initial={{ opacity: 0, y: -20, scale: 0.8 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15 }}
         >
-          <div className="text-[10px] text-green-400/80 font-bold tracking-[0.25em] uppercase mb-1">
-            Find a fruit rich in
+          <div className="inline-block px-4 py-1 rounded-full bg-black/30 backdrop-blur-sm border border-white/5 mb-2">
+            <span className="text-[10px] text-green-400/80 font-bold tracking-[0.25em] uppercase">Find a fruit rich in</span>
           </div>
-          <div className="text-2xl sm:text-3xl font-heading text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
-            {nutrient}
-          </div>
-          {/* Decorative line */}
-          <div className="mx-auto mt-2 w-16 h-[2px] bg-gradient-to-r from-green-400 via-white to-green-400 rounded-full" />
+          <div className="text-2xl sm:text-3xl font-heading text-white text-glow-white">{nutrient}</div>
+          <div className="mx-auto mt-2 w-16 h-[2px] bg-gradient-to-r from-green-400/60 via-white/40 to-green-400/60 rounded-full" />
         </motion.div>
       </div>
 
-      {/* Fruits area with running-game feel */}
       <div className="absolute bottom-8 left-0 right-0 z-10">
         <AnimatePresence mode="wait">
-          <motion.div
-            key={nutrient}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          <motion.div key={nutrient} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="flex justify-center items-end gap-3 sm:gap-5 px-4"
           >
             {options.map((fruit, i) => (
-              <FallingFruit
-                key={fruit.id + '-' + i}
-                fruit={fruit}
-                index={i}
-                onSelect={handleSelect}
-                disabled={showResult}
-                isCorrect={fruit.id === correctId}
-                showResult={showResult}
-              />
+              <FallingFruit key={fruit.id + '-' + i} fruit={fruit} index={i}
+                onSelect={handleSelect} disabled={showResult}
+                isCorrect={fruit.id === correctId} showResult={showResult} />
             ))}
           </motion.div>
         </AnimatePresence>
       </div>
-
-      {/* Bottom gradient */}
-      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#0a1628] to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#0d1a12] to-transparent pointer-events-none" />
     </div>
   );
 }

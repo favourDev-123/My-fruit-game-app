@@ -2,11 +2,12 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Heart } from "lucide-react";
+import { Search, Heart, ArrowLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { fruits, healthConditions } from "@/lib/fruitData";
 
-export default function Learn() {
+export default function Learn({ onBack }) {
   const [activeCondition, setActiveCondition] = useState(null);
   const [search, setSearch] = useState("");
 
@@ -21,17 +22,19 @@ export default function Learn() {
     : [];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
-      <div className="text-center mb-10">
-        <h1 className="font-heading text-3xl sm:text-4xl mb-3">
-          ❤️ Health Conditions
-        </h1>
+    <div className="max-w-5xl mx-auto px-4 py-6">
+      <Button onClick={onBack} variant="ghost" className="mb-4 rounded-full gap-2 text-muted-foreground hover:text-foreground">
+        <ArrowLeft className="w-4 h-4" /> Back to Home
+      </Button>
+
+      <div className="text-center mb-6">
+        <h1 className="font-heading text-3xl sm:text-4xl mb-3">❤️ Health Conditions</h1>
         <p className="text-muted-foreground text-lg max-w-xl mx-auto">
           Select a health condition to discover which fruits can help.
         </p>
       </div>
 
-      <div className="max-w-md mx-auto mb-8 relative">
+      <div className="max-w-md mx-auto mb-6 relative">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
         <Input
           placeholder="Search conditions..."
@@ -41,8 +44,7 @@ export default function Learn() {
         />
       </div>
 
-      {/* Condition pills */}
-      <div className="flex flex-wrap justify-center gap-2 mb-10">
+      <div className="flex flex-wrap justify-center gap-2 mb-8">
         {filteredConditions.map((condition) => {
           const active = activeCondition === condition;
           return (
@@ -61,7 +63,6 @@ export default function Learn() {
         })}
       </div>
 
-      {/* Results */}
       <AnimatePresence mode="wait">
         {activeCondition ? (
           <motion.div

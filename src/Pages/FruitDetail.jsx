@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,11 +7,7 @@ import { fruits, ageGroupLabels } from "@/lib/fruitData";
 import NutrientBadge from "@/components/fruits/NutrientBadge";
 import HealthBenefitItem from "@/components/fruits/HealthBenefitItem";
 
-export default function FruitDetail() {
-  const navigate = useNavigate();
-  const urlParams = new URLSearchParams(window.location.search);
-  const pathParts = window.location.pathname.split("/");
-  const fruitId = parseInt(pathParts[pathParts.length - 1]);
+export default function FruitDetail({ fruitId, onBack }) {
   const fruit = fruits.find((f) => f.id === fruitId);
 
   if (!fruit) {
@@ -20,7 +15,7 @@ export default function FruitDetail() {
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
         <span className="text-6xl block mb-4">🤔</span>
         <h2 className="font-heading text-2xl mb-4">Fruit not found</h2>
-        <Button onClick={() => navigate("/fruits")} variant="outline" className="rounded-full">
+        <Button onClick={onBack} variant="outline" className="rounded-full">
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Library
         </Button>
       </div>
@@ -29,22 +24,13 @@ export default function FruitDetail() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <Button
-        onClick={() => navigate("/fruits")}
-        variant="ghost"
-        className="mb-6 rounded-full gap-2 text-muted-foreground hover:text-foreground"
-      >
+      <Button onClick={onBack} variant="ghost" className="mb-6 rounded-full gap-2 text-muted-foreground hover:text-foreground">
         <ArrowLeft className="w-4 h-4" /> Back to Library
       </Button>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        {/* Hero */}
         <div className="relative rounded-3xl overflow-hidden mb-8">
-          <img
-            src={fruit.image}
-            alt={fruit.name}
-            className="w-full h-56 sm:h-72 object-cover"
-          />
+          <img src={fruit.image} alt={fruit.name} className="w-full h-56 sm:h-72 object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
           <div className="absolute bottom-0 left-0 p-6 sm:p-8">
             <span className="text-5xl drop-shadow-lg block mb-2">{fruit.emoji}</span>
@@ -52,10 +38,8 @@ export default function FruitDetail() {
           </div>
         </div>
 
-        {/* Description */}
         <p className="text-lg text-muted-foreground mb-6 leading-relaxed">{fruit.description}</p>
 
-        {/* Nutrients */}
         <div className="mb-8">
           <h2 className="font-heading text-xl mb-3">Key Nutrients</h2>
           <div className="flex flex-wrap gap-2">
@@ -65,7 +49,6 @@ export default function FruitDetail() {
           </div>
         </div>
 
-        {/* Health Benefits */}
         <div className="mb-8">
           <h2 className="font-heading text-xl mb-3">Health Benefits</h2>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -75,15 +58,12 @@ export default function FruitDetail() {
           </div>
         </div>
 
-        {/* Age Guide */}
         <div className="mb-8">
           <h2 className="font-heading text-xl mb-3">Age-Specific Benefits</h2>
           <Tabs defaultValue="children">
             <TabsList className="w-full grid grid-cols-4 h-auto p-1 bg-muted rounded-xl">
               {Object.entries(ageGroupLabels).map(([key, group]) => (
-                <TabsTrigger
-                  key={key}
-                  value={key}
+                <TabsTrigger key={key} value={key}
                   className="rounded-lg py-2 text-xs sm:text-sm data-[state=active]:shadow-sm"
                 >
                   <span className="hidden sm:inline mr-1">{group.emoji}</span>

@@ -38,15 +38,15 @@ export default function FallingFruit({ fruit, onSelect, disabled, index, isCorre
       onClick={() => !disabled && onSelect(fruit)}
       disabled={disabled}
       className={`relative flex flex-col items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-2xl cursor-pointer
-        ${showResult && isCorrect ? 'ring-4 ring-green-400 ring-offset-2 ring-offset-[#0a1628]' : ''}
-        ${showResult && !isCorrect && !disabled ? 'ring-4 ring-red-500 ring-offset-2 ring-offset-[#0a1628]' : ''}
-        ${!showResult ? 'hover:scale-110 active:scale-95' : ''}
+        ${showResult && isCorrect ? 'ring-4 ring-green-400 ring-offset-2 ring-offset-[#0d1a12]' : ''}
+        ${showResult && !isCorrect && !disabled ? 'ring-4 ring-red-500 ring-offset-2 ring-offset-[#0d1a12]' : ''}
+        ${!showResult ? 'hover:scale-110 active:scale-90' : ''}
         transition-all duration-200`}
       style={{
         background: `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), ${bgColor})`,
         boxShadow: showResult && isCorrect
-          ? '0 0 30px rgba(34,197,94,0.5), inset 0 0 20px rgba(34,197,94,0.2)'
-          : '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)',
+          ? '0 0 30px rgba(74,160,44,0.5), inset 0 0 20px rgba(74,160,44,0.2)'
+          : '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)',
       }}
     >
       <span className="text-4xl sm:text-5xl drop-shadow-lg">{fruit.emoji}</span>

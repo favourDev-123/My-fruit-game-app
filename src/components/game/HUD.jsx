@@ -16,7 +16,7 @@ export default function HUD({ score, timer, lives, totalLives = 5, streak = 0, c
   return (
     <>
       {/* Score */}
-      <div className="absolute top-4 left-4 glass rounded-2xl px-4 py-2 z-20">
+      <div className="absolute top-4 left-4 rounded-2xl px-4 py-2 z-20 bg-black/30 backdrop-blur-md border border-white/5 shadow-lg">
         <div className="text-xs text-green-400/80 font-bold tracking-wider">SCORE</div>
         <div className="text-2xl font-extrabold text-white tabular-nums">
           {score.toString().padStart(3, '0')}
@@ -24,7 +24,7 @@ export default function HUD({ score, timer, lives, totalLives = 5, streak = 0, c
       </div>
 
       {/* Timer */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 glass rounded-2xl px-5 py-2 z-20 flex items-center gap-2">
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 rounded-2xl px-5 py-2 z-20 bg-black/30 backdrop-blur-md border border-white/5 shadow-lg flex items-center gap-2">
         <div className={`text-lg font-extrabold tabular-nums ${timer <= 10 ? 'text-red-400' : 'text-green-300'}`}>
           {timer}s
         </div>
@@ -56,7 +56,7 @@ export default function HUD({ score, timer, lives, totalLives = 5, streak = 0, c
       )}
 
       {/* Lives */}
-      <div className="absolute top-4 right-4 glass rounded-2xl px-4 py-2 z-20 flex gap-1">
+      <div className="absolute top-4 right-4 rounded-2xl px-4 py-2 z-20 bg-black/30 backdrop-blur-md border border-white/5 shadow-lg flex gap-1">
         {Array.from({ length: totalLives }, (_, i) => (
           <motion.span
             key={i}

@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Lightbulb, Volume2, VolumeX } from "lucide-react";
+import { ArrowRight, ArrowLeft, Lightbulb, Volume2, VolumeX } from "lucide-react";
 import { quizQuestions } from "@/lib/fruitData";
 import QuizOption from "@/components/quiz/QuizOption";
 import ScoreScreen from "@/components/quiz/ScoreScreen";
@@ -12,6 +12,7 @@ import {
   playFinish,
   resumeContext,
 } from "@/lib/quizAudio";
+import { useGameState } from "@/lib/GameStateContext";
 
 function shuffleArray(arr) {
   const shuffled = [...arr];
@@ -23,6 +24,7 @@ function shuffleArray(arr) {
 }
 
 export default function QuizGame() {
+  const { goTo } = useGameState();
   const [started, setStarted] = useState(false);
   const [currentQ, setCurrentQ] = useState(0);
   const [selected, setSelected] = useState(null);
@@ -90,7 +92,12 @@ export default function QuizGame() {
 
   if (!started) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-16 text-center">
+      <div className="max-w-2xl mx-auto px-4 py-16 text-center relative">
+        <button onClick={() => goTo('home')}
+          className="absolute top-4 left-4 p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </button>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <span className="text-7xl block mb-6">🧠</span>
           <h1 className="font-heading text-3xl sm:text-4xl mb-4">Fruit Health Quiz</h1>
@@ -113,7 +120,7 @@ export default function QuizGame() {
   if (finished) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16">
-        <ScoreScreen score={score} total={questions.length} onRestart={restart} />
+        <ScoreScreen score={score} total={questions.length} onRestart={restart} onHome={() => goTo('home')} />
       </div>
     );
   }
@@ -122,7 +129,13 @@ export default function QuizGame() {
   const progress = ((currentQ + 1) / questions.length) * 100;
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
+    <div className="max-w-2xl mx-auto px-4 py-8 relative">
+      {/* Back button */}
+      <button onClick={() => goTo('home')}
+        className="absolute top-4 left-4 p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all z-20"
+      >
+        <ArrowLeft className="w-5 h-5" />
+      </button>
       {/* Progress */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-2">

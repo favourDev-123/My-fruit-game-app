@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Trophy, RotateCcw, Star } from "lucide-react";
+import { Trophy, RotateCcw, Star, Home } from "lucide-react";
 
-export default function ScoreScreen({ score, total, onRestart }) {
+export default function ScoreScreen({ score, total, onRestart, onHome }) {
   const percentage = Math.round((score / total) * 100);
   const getMessage = () => {
     if (percentage === 100) return { text: "Perfect Score! 🎉", sub: "You're a Fruit Genius!" };
@@ -44,14 +44,27 @@ export default function ScoreScreen({ score, total, onRestart }) {
         </p>
       </div>
 
-      <Button
-        onClick={onRestart}
-        size="lg"
-        className="rounded-full px-8 gap-2 bg-primary hover:bg-primary/90"
-      >
-        <RotateCcw className="w-4 h-4" />
-        Play Again
-      </Button>
+      <div className="flex gap-3 justify-center">
+        <Button
+          onClick={onRestart}
+          size="lg"
+          className="rounded-full px-8 gap-2"
+        >
+          <RotateCcw className="w-4 h-4" />
+          Play Again
+        </Button>
+        {onHome && (
+          <Button
+            onClick={onHome}
+            size="lg"
+            variant="outline"
+            className="rounded-full px-6 gap-2"
+          >
+            <Home className="w-4 h-4" />
+            Home
+          </Button>
+        )}
+      </div>
     </motion.div>
   );
 }

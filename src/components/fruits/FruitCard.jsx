@@ -1,17 +1,16 @@
-import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function FruitCard({ fruit, index }) {
+export default function FruitCard({ fruit, index, onSelect }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.4 }}
     >
-      <Link to={`/fruits/${fruit.id}`}>
+      <button onClick={() => onSelect(fruit.id)} className="w-full text-left">
         <Card className={`group relative overflow-hidden border-2 ${fruit.color} hover:shadow-xl transition-all duration-300 hover:-translate-y-1`}>
           <div className="relative h-40 overflow-hidden">
             <img
@@ -37,7 +36,7 @@ export default function FruitCard({ fruit, index }) {
             </div>
           </div>
         </Card>
-      </Link>
+      </button>
     </motion.div>
   );
 }

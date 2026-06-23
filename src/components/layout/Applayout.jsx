@@ -3,9 +3,9 @@ import AppNavbar from "./AppNavbar";
 
 export default function AppLayout() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="h-screen overflow-hidden flex flex-col game-gradient">
       <AppNavbar />
-      <main>
+      <main className="flex-1 overflow-y-auto overflow-x-hidden">
         <Outlet />
       </main>
     </div>
